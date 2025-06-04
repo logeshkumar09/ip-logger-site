@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IP Logger</title>
+</head>
+<body>
+  <h1>Welcome to the IP Logger Test</h1>
+  <p>Your info is being logged.</p>
+
+  <script>
+    async function logVisitor() {
+      try {
+        // Get visitor IP from ipify API
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+
+        // Prepare data to send
+        const data = {
+          ip: ipData.ip,
+          userAgent: navigator.userAgent
+        };
+
+        // Send data to Google Apps Script Web App
+        await fetch('YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      } catch (error) {
+        console.error('Logging failed:', error);
+      }
+    }
+
+    logVisitor();
+  </script>
+</body>
+</html>
