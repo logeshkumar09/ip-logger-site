@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>IP Logger</title>
-</head>
-<body>
-  <h1>Welcome to the IP Logger Test</h1>
-  <p>Your info is being logged.</p>
+async function logIP() {
+  try {
+    const ipResponse = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipResponse.json();
 
-  <script>
-    async function logVisitor() {
-      try {
-        // Get visitor IP from ipify API
-        const ipResponse = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResponse.json();
+    const logData = {
+      ip: ipData.ip,
+      userAgent: navigator.userAgent
+    };
 
-        // Prepare data to send
-        const data = {
-          ip: ipData.ip,
-          userAgent: navigator.userAgent
-        };
+    await fetch('https://script.google.com/macros/s/AKfycbyDbZg2ZM4vRLVUTVyLM_joCeTuNxnWZmopJZ6Shp3bsTs03tnldv8VU9Uriyo9f-Gt_w/exec', {
+      method: 'POST',
+      body: JSON.stringify(logData),
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-        // Send data to Google Apps Script Web App
-        await fetch('https://script.google.com/macros/s/AKfycby0D3YJ6koa92HyitzGrGj-h3uooZ1uMSD8_nA_P4v6x224_rzU4KuJJMxuQpiOrTcQ/exec', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      } catch (error) {
-        console.error('Logging failed:', error);
-      }
-    }
+    console.log("IP Logged Successfully!");
+  } catch (error) {
+    console.error("Error Logging IP:", error);
+  }
+}
 
-    logVisitor();
-  </script>
-</body>
-</html>
+logIP();
